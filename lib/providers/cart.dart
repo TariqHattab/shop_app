@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
 
 class CartItem {
   final String id;
@@ -55,6 +56,33 @@ class Cart with ChangeNotifier {
 
   void removeItem(String productId) {
     _items.remove(productId);
+    notifyListeners();
+  }
+
+  void removeOnlyOne(String productId) {
+    //removes only one from quantity if the item is more than one
+    // otherwise removes it from cart
+    if (!_items.containsKey(productId)) {
+      return;
+    }
+    if (_items[productId].quantity > 1) {
+      _items.update(
+        productId,
+        (oldCartItem) => CartItem(
+          id: oldCartItem.id,
+          price: oldCartItem.price,
+          quantity: oldCartItem.quantity - 1,
+          title: oldCartItem.title,
+        ),
+      );
+    } else {
+      _items.remove(productId);
+    }
+    notifyListeners();
+  }
+
+  void clear() {
+    _items = {};
     notifyListeners();
   }
 }
