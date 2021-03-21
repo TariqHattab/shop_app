@@ -1,5 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/product.dart';
+import '../providers/products.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const routeName = '/edit_product_screen';
@@ -12,6 +15,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
   var _descriptionFocuseNode = FocusNode();
   var _imageUrlFocuseNode = FocusNode();
   var _imageUrlController = TextEditingController();
+  var _titleController = TextEditingController();
+  var _priceController = TextEditingController();
+  var _descriptionController = TextEditingController();
 
   @override
   void dispose() {
@@ -36,6 +42,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           child: Column(
             children: [
               TextFormField(
+                controller: _titleController,
                 decoration: InputDecoration(labelText: 'Title'),
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) {
@@ -43,12 +50,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 },
               ),
               TextFormField(
+                controller: _priceController,
                 decoration: InputDecoration(labelText: 'Price'),
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
                 focusNode: _priceFocuseNode,
               ),
               TextFormField(
+                controller: _descriptionController,
                 decoration: InputDecoration(labelText: 'Description'),
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
@@ -77,7 +86,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       keyboardType: TextInputType.url,
                       controller: _imageUrlController,
                       onEditingComplete: () {
-                        setState(() {});
+                        setState(() {
+                          Provider.of<Products>(context, listen: false)
+                              .addProduct(Product(
+                                  id: DateTime.now().toString(),
+                                  title: _titleController.text,
+                                  description: _descriptionController.text,
+                                  price: double.parse(_priceController.text),
+                                  imageUrl: _imageUrlController.text));
+                        });
                       },
                       focusNode: _imageUrlFocuseNode,
                     ),

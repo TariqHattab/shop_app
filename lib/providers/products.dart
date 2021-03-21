@@ -50,7 +50,14 @@ class Products with ChangeNotifier {
   }
 
   void addProduct(Product newProduct) {
-    // ...
+    _items.add(Product(
+      id: newProduct.id,
+      title: newProduct.title,
+      price: newProduct.price,
+      description: newProduct.description,
+      imageUrl: newProduct.imageUrl,
+    ));
+
     notifyListeners();
   }
 }
